@@ -3,46 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Posts 展示</title>
+    <title>天中乾淨專屬網站</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f7fa;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16 / 9;
             background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            overflow-y: auto;
         }
         .post {
-            border: 1px solid #ddd;
-            padding: 15px;
+            border: none;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            background-color: #ffffff;
+            position: relative;
+        }
+        .post:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        .post p {
+            color: #2c3e50;
+            line-height: 1.8;
+            font-size: 16px;
             margin-bottom: 20px;
-            border-radius: 5px;
         }
         .post img {
-            max-width: 100%;
+            max-width: 60%;
             height: auto;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .post img:hover {
+            transform: scale(1.02);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .post-date {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .system-message {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 10px;
             margin-top: 10px;
+            font-style: italic;
+            color: #34495e;
+        }
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .share-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
             border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .share-button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Firebase Posts 展示</h1>
         <div id="posts-container"></div>
     </div>
 
@@ -64,24 +139,71 @@
 
         // 獲取並顯示 posts
         function getPosts() {
-            db.collection("posts").get().then((querySnapshot) => {
+            db.collection("posts").orderBy("createdAt", "desc").get().then((querySnapshot) => {
                 const postsContainer = document.getElementById("posts-container");
                 querySnapshot.forEach((doc) => {
                     const post = doc.data();
                     const postElement = document.createElement("div");
                     postElement.className = "post";
+                    const postDate = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleString('zh-TW') : '未知日期';
                     postElement.innerHTML = `
-                        <h2>${post.title || '無標題'}</h2>
+                        <div class="post-header">
+                            <div class="post-avatar">${post.author ? post.author.charAt(0).toUpperCase() : 'U'}</div>
+                            <div>
+                                <strong>${post.author || '匿名用戶'}</strong>
+                                <div class="post-date">${postDate}</div>
+                            </div>
+                        </div>
                         <p>${post.content || '無內容'}</p>
-                        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="貼文圖片">` : ''}
+                        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="貼文圖片" loading="lazy" onerror="this.onerror=null;this.src='placeholder.jpg';">` : ''}
                         ${post.imageUrls && post.imageUrls.length > 0 ? 
-                            post.imageUrls.map(url => `<img src="${url}" alt="貼文圖片">`).join('') : 
+                            post.imageUrls.map(url => `<img src="${url}" alt="貼文圖片" loading="lazy" onerror="this.onerror=null;this.src='placeholder.jpg';">`).join('') : 
                             ''}
+                        <div class="system-message">天中乾淨專屬系統。</div>
+                        <button class="share-button" onclick="sharePost(this.parentElement)">分享至 IG 限動</button>
                     `;
                     postsContainer.appendChild(postElement);
                 });
-            }).catch((error) => {
+            }).catch(function(error) {
                 console.error("獲取 posts 時出錯：", error);
+                const postsContainer = document.getElementById("posts-container");
+                postsContainer.innerHTML = '<div class="error-message">無法載入貼文，請稍後再試。</div>';
+            });
+        }
+
+        // 分享貼文至 IG 限動
+        function sharePost(postElement) {
+            html2canvas(postElement).then(canvas => {
+                canvas.toBlob(blob => {
+                    const file = new File([blob], "post_screenshot.png", { type: "image/png" });
+                    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                        // 移動設備：直接跳轉至 Instagram 限時動態發布頁面
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        fetch('https://api.instagram.com/v1/media/upload/', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            window.location.href = `instagram://story-camera`;
+                        })
+                        .catch(error => {
+                            console.error('上傳失敗', error);
+                            alert('無法直接分享至 Instagram，請手動截圖並分享。');
+                        });
+                    } else {
+                        // 桌面設備：使用 Web Share API
+                        const shareData = { files: [file] };
+                        if (navigator.canShare && navigator.canShare(shareData)) {
+                            navigator.share(shareData)
+                                .then(() => console.log('分享成功'))
+                                .catch((error) => console.log('分享失敗', error));
+                        } else {
+                            alert('您的瀏覽器不支持此分享功能，請手動截圖並分享。');
+                        }
+                    }
+                });
             });
         }
 
