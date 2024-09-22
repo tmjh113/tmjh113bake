@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Posts 展示</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .post {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Firebase Posts 展示</h1>
+        <div id="posts-container"></div>
+    </div>
+
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAw3LKSDHHwasOhN0l63lO4I-AO1xeGGU",
+            authDomain: "tmjh113.firebaseapp.com",
+            projectId: "tmjh113",
+            storageBucket: "tmjh113.appspot.com",
+            messagingSenderId: "936878916477",
+            appId: "1:936878916477:web:cbff479db9898b0a218214",
+            measurementId: "G-J5WT01ZLBD"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 獲取並顯示 posts
+        function getPosts() {
+            db.collection("posts").get().then((querySnapshot) => {
+                const postsContainer = document.getElementById("posts-container");
+                querySnapshot.forEach((doc) => {
+                    const post = doc.data();
+                    const postElement = document.createElement("div");
+                    postElement.className = "post";
+                    postElement.innerHTML = `
+                        <h2>${post.title || '無標題'}</h2>
+                        <p>${post.content || '無內容'}</p>
+                        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="貼文圖片">` : ''}
+                        ${post.imageUrls && post.imageUrls.length > 0 ? 
+                            post.imageUrls.map(url => `<img src="${url}" alt="貼文圖片">`).join('') : 
+                            ''}
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            }).catch((error) => {
+                console.error("獲取 posts 時出錯：", error);
+            });
+        }
+
+        // 頁面加載時獲取 posts
+        window.onload = getPosts;
+    </script>
+</body>
+</html>
