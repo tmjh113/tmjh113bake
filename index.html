@@ -16,6 +16,8 @@
             --background-color: #f0f4f8;
             --text-color: #2c3e50;
             --shadow-color: rgba(0,0,0,0.1);
+            --border-radius: 20px;
+            --transition-duration: 0.3s;
         }
         
         * {
@@ -38,23 +40,24 @@
         .container {
             width: 100%;
             max-width: 800px;
-            height: 100vh;
+            min-height: 100vh;
             background-color: white;
             overflow-y: auto;
             box-shadow: 0 0 30px var(--shadow-color);
-            border-radius: 20px;
+            border-radius: var(--border-radius);
             -webkit-overflow-scrolling: touch;
+            padding: 20px;
         }
         
         .post {
             border: none;
             padding: 30px;
-            margin: 20px;
-            transition: all 0.4s ease;
+            margin: 20px 0;
+            transition: all var(--transition-duration) ease;
             box-shadow: 0 10px 30px var(--shadow-color);
             background-color: #ffffff;
             position: relative;
-            border-radius: 20px;
+            border-radius: var(--border-radius);
         }
         
         .post:hover {
@@ -67,19 +70,6 @@
             line-height: 1.8;
             font-size: 16px;
             margin-bottom: 20px;
-        }
-        
-        .post img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px var(--shadow-color);
-            transition: all 0.3s ease;
-        }
-        
-        .post img:hover {
-            transform: scale(1.02);
         }
         
         .post-header {
@@ -130,27 +120,6 @@
             box-shadow: 0 4px 15px var(--shadow-color);
         }
         
-        .download-button {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            box-shadow: 0 4px 15px var(--shadow-color);
-        }
-        
-        .download-button:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--shadow-color);
-        }
-        
         .screenshot-modal {
             display: none;
             position: fixed;
@@ -163,24 +132,27 @@
             background-color: rgba(0,0,0,0.8);
             -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
         }
         
         .screenshot-modal-content {
             background-color: #fefefe;
-            margin: 10% auto;
+            margin: auto;
             padding: 30px;
             border: 1px solid #888;
             width: 90%;
             max-width: 600px;
-            border-radius: 20px;
+            border-radius: var(--border-radius);
             box-shadow: 0 10px 30px var(--shadow-color);
+            text-align: center;
         }
         
         .screenshot-checkbox {
             margin-right: 15px;
         }
         
-        .screenshot-button {
+        .screenshot-button, .delete-button {
             background-color: var(--secondary-color);
             color: white;
             padding: 15px 30px;
@@ -189,16 +161,22 @@
             margin-top: 20px;
             border-radius: 30px;
             font-weight: bold;
-            transition: all 0.3s ease;
+            transition: all var(--transition-duration) ease;
             box-shadow: 0 4px 15px var(--shadow-color);
             width: 100%;
             font-size: 16px;
         }
         
-        .screenshot-button:hover {
+        .screenshot-button:hover, .delete-button:hover {
             background-color: #27ae60;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px var(--shadow-color);
+        }
+        
+        .post-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         
         @media (max-width: 768px) {
@@ -207,7 +185,7 @@
             }
             
             .post {
-                margin: 10px;
+                margin: 10px 0;
                 padding: 20px;
             }
             
@@ -216,18 +194,131 @@
                 margin: 5% auto;
             }
         }
+        
+        /* New styles for enhanced design */
+        .page-header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .post-author {
+            font-weight: 500;
+            font-size: 18px;
+        }
+        
+        .post-content p {
+            text-align: justify;
+            text-justify: inter-word;
+        }
+        
+        .system-message {
+            background-color: #e8f5e9;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-top: 20px;
+            font-style: normal;
+            color: #1b5e20;
+        }
+        
+        .screenshot-options {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .screenshot-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .screenshot-option label {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .download-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .download-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .media-download-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* 新增的樣式，用於置中按鈕 */
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+        }
+
+        .floating-buttons button {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <header class="page-header">
+            <h1 class="page-title">天中乾淨專屬網站</h1>
+        </header>
         <div id="posts-container"></div>
     </div>
 
     <div id="screenshotModal" class="screenshot-modal">
         <div class="screenshot-modal-content">
             <h2>選擇要截圖的貼文</h2>
-            <div id="screenshotOptions"></div>
+            <div id="screenshotOptions" class="screenshot-options"></div>
             <button class="screenshot-button" onclick="captureSelectedPosts()">截圖選中的貼文</button>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="screenshot-modal">
+        <div class="screenshot-modal-content">
+            <h2>選擇要刪除的貼文</h2>
+            <div id="deleteOptions" class="screenshot-options"></div>
+            <input type="password" id="adminPassword" placeholder="請輸入管理員密碼" style="width: 100%; margin-top: 10px; padding: 10px;">
+            <button class="delete-button" onclick="deleteSelectedPosts()">刪除選中的貼文</button>
         </div>
     </div>
 
@@ -251,30 +342,46 @@
         function getPosts() {
             db.collection("posts").orderBy("createdAt", "desc").get().then((querySnapshot) => {
                 const postsContainer = document.getElementById("posts-container");
+                postsContainer.innerHTML = '';
                 querySnapshot.forEach((doc) => {
                     const post = doc.data();
                     const postElement = document.createElement("div");
                     postElement.className = "post";
                     postElement.id = `post-${doc.id}`;
                     const postDate = post.createdAt ? new Date(post.createdAt.toDate()).toLocaleString('zh-TW') : '未知日期';
+                    
+                    // 處理 mediaUrls
+                    const mediaUrls = post.mediaUrls || [];
+                    let downloadButtonsHtml = '<div class="media-download-container">';
+                    
+                    if (mediaUrls.length > 0) {
+                        mediaUrls.forEach((media, index) => {
+                            if (media.type === 'image') {
+                                downloadButtonsHtml += `<a href="${media.url}" class="download-button" download="image_${index + 1}.jpg">下載圖片 ${index + 1}</a>`;
+                            } else if (media.type === 'gif') {
+                                downloadButtonsHtml += `<a href="${media.url}" class="download-button" download="gif_${index + 1}.gif">下載GIF ${index + 1}</a>`;
+                            }
+                        });
+                    }
+                    downloadButtonsHtml += '</div>';
+
                     postElement.innerHTML = `
                         <div class="post-header">
                             <div class="post-avatar">${post.author ? post.author.charAt(0).toUpperCase() : 'U'}</div>
                             <div>
-                                <strong>${post.author || '匿名用戶'}</strong>
+                                <div class="post-author">${post.author || '匿名用戶'}</div>
                                 <div class="post-date">${postDate}</div>
                             </div>
                         </div>
-                        <p>${post.content || '無內容'}</p>
-                        ${post.imageUrl ? `<img src="${post.imageUrl}" alt="貼文圖片" loading="lazy" onerror="this.onerror=null;this.src='placeholder.jpg';">` : ''}
-                        ${post.imageUrls && post.imageUrls.length > 0 ? 
-                            post.imageUrls.map(url => `<img src="${url}" alt="貼文圖片" loading="lazy" onerror="this.onerror=null;this.src='placeholder.jpg';">`).join('') : 
-                            ''}
+                        <div class="post-content">
+                            ${downloadButtonsHtml}
+                            <p>${post.content || '無內容'}</p>
+                        </div>
                         <div class="system-message">天中乾淨專屬系統。</div>
                     `;
                     postsContainer.appendChild(postElement);
                 });
-                addScreenshotButton();
+                addFloatingButtons();
             }).catch(function(error) {
                 console.error("獲取 posts 時出錯：", error);
                 const postsContainer = document.getElementById("posts-container");
@@ -282,16 +389,23 @@
             });
         }
 
-        function addScreenshotButton() {
+        function addFloatingButtons() {
+            const floatingButtons = document.createElement('div');
+            floatingButtons.className = 'floating-buttons';
+
             const screenshotButton = document.createElement('button');
             screenshotButton.textContent = '截圖多則貼文';
             screenshotButton.className = 'screenshot-button';
-            screenshotButton.style.position = 'fixed';
-            screenshotButton.style.bottom = '20px';
-            screenshotButton.style.right = '20px';
-            screenshotButton.style.zIndex = '999';
             screenshotButton.onclick = openScreenshotModal;
-            document.body.appendChild(screenshotButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '刪除多則貼文';
+            deleteButton.className = 'delete-button';
+            deleteButton.onclick = openDeleteModal;
+
+            floatingButtons.appendChild(screenshotButton);
+            floatingButtons.appendChild(deleteButton);
+            document.body.appendChild(floatingButtons);
         }
 
         function openScreenshotModal() {
@@ -302,6 +416,7 @@
             const posts = document.querySelectorAll('.post');
             posts.forEach((post, index) => {
                 const option = document.createElement('div');
+                option.className = 'screenshot-option';
                 option.innerHTML = `
                     <input type="checkbox" id="post-option-${index}" class="screenshot-checkbox" value="${post.id}">
                     <label for="post-option-${index}">${post.querySelector('p').textContent.substring(0, 50)}...</label>
@@ -309,7 +424,26 @@
                 optionsContainer.appendChild(option);
             });
 
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
+        }
+
+        function openDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const optionsContainer = document.getElementById('deleteOptions');
+            optionsContainer.innerHTML = '';
+
+            const posts = document.querySelectorAll('.post');
+            posts.forEach((post, index) => {
+                const option = document.createElement('div');
+                option.className = 'screenshot-option';
+                option.innerHTML = `
+                    <input type="checkbox" id="delete-option-${index}" class="screenshot-checkbox" value="${post.id}">
+                    <label for="delete-option-${index}">${post.querySelector('p').textContent.substring(0, 50)}...</label>
+                `;
+                optionsContainer.appendChild(option);
+            });
+
+            modal.style.display = 'flex';
         }
 
         async function captureSelectedPosts() {
@@ -323,10 +457,18 @@
             const container = document.createElement('div');
             container.style.padding = '20px';
             container.style.backgroundColor = 'white';
+            container.style.maxWidth = '100%';
+            container.style.width = '100%';
             
             for (const post of postsToCapture) {
                 const clonedPost = post.cloneNode(true);
-                clonedPost.querySelectorAll('.download-button').forEach(btn => btn.remove());
+                clonedPost.style.margin = '0 0 20px 0';
+                clonedPost.style.width = '100%';
+                // 移除下載按鈕
+                const downloadContainer = clonedPost.querySelector('.media-download-container');
+                if (downloadContainer) {
+                    downloadContainer.remove();
+                }
                 container.appendChild(clonedPost);
             }
 
@@ -338,6 +480,8 @@
                     logging: false,
                     useCORS: true,
                     allowTaint: true,
+                    width: container.offsetWidth,
+                    height: container.offsetHeight,
                     onclone: function(clonedDoc) {
                         const clonedContainer = clonedDoc.querySelector('div');
                         clonedContainer.style.position = 'absolute';
@@ -356,6 +500,36 @@
             } finally {
                 document.body.removeChild(container);
                 document.getElementById('screenshotModal').style.display = 'none';
+            }
+        }
+
+        async function deleteSelectedPosts() {
+            const password = document.getElementById('adminPassword').value;
+            if (password !== 'cute6349') {
+                alert('管理員密碼錯誤');
+                return;
+            }
+
+            const selectedPosts = Array.from(document.querySelectorAll('#deleteOptions .screenshot-checkbox:checked')).map(checkbox => checkbox.value);
+            if (selectedPosts.length === 0) {
+                alert('請至少選擇一則貼文');
+                return;
+            }
+
+            if (confirm(`確定要刪除選中的 ${selectedPosts.length} 則貼文嗎？`)) {
+                try {
+                    for (const postId of selectedPosts) {
+                        await db.collection("posts").doc(postId.replace('post-', '')).delete();
+                    }
+                    alert('刪除成功');
+                    getPosts(); // 重新載入貼文
+                } catch (error) {
+                    console.error('刪除貼文時出錯：', error);
+                    alert('刪除失敗，請稍後再試。');
+                } finally {
+                    document.getElementById('deleteModal').style.display = 'none';
+                    document.getElementById('adminPassword').value = '';
+                }
             }
         }
 
